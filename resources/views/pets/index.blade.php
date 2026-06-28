@@ -17,6 +17,18 @@
             </div>
         @endif
 
+        <form action="{{ route('pets.index') }}" method="GET" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Buscar por nombre o especie..." 
+                       value="{{ $search }}">
+                <button class="btn btn-primary" type="submit">🔍 Buscar</button>
+                @if($search)
+                    <a href="{{ route('pets.index') }}" class="btn btn-secondary">Limpiar</a>
+                @endif
+            </div>
+        </form>
+
         <table class="table table-striped table-hover mt-3">
             <thead class="table-dark">
                 <tr>
@@ -34,11 +46,11 @@
                         <td>{{ $pet->name }}</td>
                         <td>{{ $pet->species }}</td>
                         <td>{{ $pet->age }} años</td>
-                        <td>{{ $pet->created_at->format('d/m/Y H:i') }}</td>
+                        <td>{{ $pet->created_at ? $pet->created_at->format('d/m/Y H:i') : '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">No hay mascotas registradas todavía.</td>
+                        <td colspan="5" class="text-center text-muted">No se encontraron mascotas que coincidan con la búsqueda.</td>
                     </tr>
                 @endforelse
             </tbody>

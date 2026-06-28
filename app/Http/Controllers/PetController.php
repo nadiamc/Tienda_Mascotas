@@ -1,36 +1,31 @@
 <?php
 
-namespace App\Http\Controllers; // 👈 Tiene que decir esto, SIN el "\Api" al final
+namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
-    // Muestra la pantalla con la tabla de mascotas
-    public function index()
+    // El método index tiene que ir ACÁ ADENTRO, entre estas llaves
+
+    public function index(Request $request)
     {
-        $pets = Pet::latest()->paginate(5);
-        return view('pets.index', compact('pets')); // 👈 Verifica que use "view" y no "response()->json"
+        $query = Pet::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $buscar = $request->search;
+            
+            $query->where(function($q) use ($buscar) {
+                $q->where('name', 'LIKE', '%' . $buscar . '%')
+                  ->orWhere('species', 'LIKE', '%' . $buscar . '%');
+            });
+        }
+
+        $pets = $query->latest()->paginate(5)->appends($request->query());
+        $search = $request->search;
+
+        return view('pets.index', compact('pets', 'search'));
     }
 
-    // Muestra la pantalla con el formulario de carga
-    public function create()
-    {
-        return view('pets.create');
-    }
-
-    // Recibe los datos del formulario, los guarda y te redirige
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'species' => 'required',
-            'age' => 'required|integer'
-        ]);
-
-        Pet::create($request->all());
-
-        return redirect()->route('pets.index')->with('success', '¡Mascota agregada con éxito!');
-    }
 }
