@@ -29,7 +29,7 @@
             </div>
         </form>
 
-        <table class="table table-striped table-hover mt-3">
+        <table class="table table-striped table-hover mt-3 align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
@@ -37,6 +37,7 @@
                     <th>Especie</th>
                     <th>Edad</th>
                     <th>Fecha de Registro</th>
+                    <th class="text-center" style="width: 200px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,10 +48,22 @@
                         <td>{{ $pet->species }}</td>
                         <td>{{ $pet->age }} años</td>
                         <td>{{ $pet->created_at ? $pet->created_at->format('d/m/Y H:i') : '-' }}</td>
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-outline-primary btn-sm fw-bold">✏️ Editar</a>
+                                
+                                <form action="{{ route('pets.destroy', $pet->id) }}" method="POST" onsubmit="return confirm('¿Seguro que querés eliminar esta mascota?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-secondary btn-sm fw-bold">🗑️ Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">No se encontraron mascotas que coincidan con la búsqueda.</td>
+                        <td colspan="6" class="text-center text-muted">No se encontraron mascotas que coincidan con la búsqueda.</td>
                     </tr>
                 @endforelse
             </tbody>
