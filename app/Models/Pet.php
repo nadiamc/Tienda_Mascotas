@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Pet extends Model
 {
-    // Habilitamos los campos de la tabla para que se puedan cargar
+    use HasFactory;
+
     protected $fillable = ['name', 'species', 'age'];
 }
